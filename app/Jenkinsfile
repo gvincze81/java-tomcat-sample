@@ -5,25 +5,29 @@ pipeline {
             steps {
                 sh 'mvn -f app/pom.xml clean package'
             }
+
             post {
-                success {
-                    echo "Now archiving the artifacts..."
-                    archiveArtifacts artifacts: '**/*.war'
-                }
+                echo "Now Archiving the Artifacts...."
+                archiveArtifacts artifacts: '**/*.war'
+            }
+
+        }
+
+        stage('Deploy to Staging env') {
+            steps {
+                build job: 'DeployAppToStagingEnv'
             }
         }
-        stage('Deploy in staging environment') {
+
+        stage('Deploy to production env') {
             steps {
-                build job: 'DeployApplication'
-            }
-        }
-        stage('Deploy to production') {
-            steps {
-                timeout(time:5, unit:'DAYS'){
-                    input message:'Approve PRODUCTION Deployment?'
+                timeout(time:5, unit:'DAYS') {
+                    input message: 'Approve PRODUCTION Deployment?'
                 }
+
                 build job: 'DeployApplicationToProductionEnv'
             }
         }
+
     }
 }
