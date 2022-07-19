@@ -11,5 +11,22 @@ pipeline {
                 }
             }
         }
+
+        stage('Deploy to staging') {
+            steps {
+                build job: 'DeployAppToStagingEnv'
+            }
+        }
+
+        stage('Deploy to production') {
+            steps {
+                timeout(time=5, unit='DAYS') {
+                    input message: 'Approve production deployment?'
+                }
+
+                build job: 'DeployApplicationToProductionEnv'
+            }
+        }
+
     }
 }
