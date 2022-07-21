@@ -15,7 +15,7 @@ pipeline {
 
         stage('Create tomcat docker image') {
             steps {
-                sh 'docker build -t tomcat_sample_webapp:${env.BUILD_ID} .'
+                sh 'docker build -t tomcat_sample_webapp:1.0.0 .'
             }
         }
 
